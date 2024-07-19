@@ -18,20 +18,12 @@ function hideLoader() {
 // showLoader();
 hideLoader();
 
-// refs.inputSearchEl.addEventListener('input', e => {
-//   if (e.target.value === '') return;
-// });
-
-// textInput.addEventListener('input', event => {
-//   output.textContent = event.currentTarget.value;
-// });
-
 refs.formEl.addEventListener('submit', onSearchImages);
 
 function onSearchImages(e) {
-  //   e.preventDefault();
-  const inputValue = refs.formEl.elements.image.value;
-  if (inputValue === '') return;
+  e.preventDefault();
+  const inputValue = refs.formEl.elements.image.value.trim();
+  if (!inputValue) return;
   const BASE_URL = 'https://pixabay.com';
   const END_POINT = '/api/';
   refs.formEl.reset();
@@ -55,7 +47,7 @@ function onSearchImages(e) {
           timeout: 3000,
         });
       }
-      return value;
+      return value.hits;
     })
     .catch(error => {
       iziToast.error({
@@ -71,40 +63,47 @@ function onSearchImages(e) {
     });
 }
 
-function imageTemplate(arr) {
+function imageMarkupTemplate(arr) {
   return arr
-    .map(
-      ({
-        webformatURL,
-        largeImageURL,
-        tags,
-        likes,
-        views,
-        comments,
-        downloads,
-      }) =>
-        `<li class="gallery-item">
-  <a class="gallery-link" href="${largeImageURL}">
+    .map(item => {
+      `<li class="gallery-item">
+  <a class="gallery-link" href="${item.largeImageURL}">
     <img
       class="gallery-image"
-      src="${webformatURL}"
-      alt="${(tags, likes, views, comments, downloads)}"
+      src="${item.webformatURL}"
+      alt="${item.tags}"
+      width="360"
+      height="200"
     />
+     <ul class="image-dsc">
+        <li > 
+            <p class="image-dsc-title">Likes</p>
+            <p class="image-dsc-text">${item.likes}</p>
+        </li>
+         <li > 
+            <p class="image-dsc-title">Views</p>
+            <p class="image-dsc-text">${item.views}</p>
+        </li>
+        <li > 
+            <p class="image-dsc-title">Comments</p>
+            <p class="image-dsc-text">${item.comments}</p>
+        </li>
+        <li > 
+            <p class="image-dsc-title">Downloads</p>
+            <p class="image-dsc-text">${item.downloads}</p>
+        </li>
+     </ul>
   </a>
-</li>`
-    )
+</li>`;
+    })
     .join('');
 }
 
-function addImages(arr) {
-  return arr.map(imageTemplate).join('');
+function imagesMarkup(arr) {
+  return arr.map(imageMarkupTemplate).join(' ');
 }
 
-// function renderImages() {
-//   const result = onSearchImages();
-//   console.log(result);
-//   const markup = addImages(result.hits);
-//   refs.markupEl.innerHTML = markup;
-// }
-
-// renderImages();
+function renderImages(arr) {
+  const markup = imagesMarkup(arr);
+  refs.markupEl.innerHTML = markup;
+}
