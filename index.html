@@ -7,8 +7,24 @@
     <title>Homework</title>
     
     <script type="module" crossorigin src="/goit-js-hw-11/commonHelpers.js"></script>
+    <link rel="modulepreload" crossorigin href="/goit-js-hw-11/assets/vendor-ad859c2f.js">
+    <link rel="stylesheet" href="/goit-js-hw-11/assets/vendor-e5212ee8.css">
+    <link rel="stylesheet" href="/goit-js-hw-11/assets/index-b33e489d.css">
   </head>
   <body>
+    <form class="js-form">
+      <input
+        class="input-search"
+        type="text"
+        id="search-image"
+        name="image"
+        placeholder="Search images..."
+        required
+      />
+      <button class="btn-search" type="submit">Search</button>
+    </form>
+    <span class="loader"></span>
+    <ul class="markup"></ul>
     
   </body>
 </html>
