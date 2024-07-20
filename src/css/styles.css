@@ -4,6 +4,7 @@
 
 body {
   font-family: Montserrat, sans-serif;
+  color: #2e2f42;
   background-color: aquamarine;
   font-size: 16px;
   font-style: normal;
@@ -13,8 +14,23 @@ body {
 }
 
 button {
+  display: block;
   cursor: pointer;
   font-family: inherit;
+}
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding-left: 0;
+}
+
+img {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  object-fit: cover;
 }
 
 .js-form {
@@ -133,4 +149,56 @@ button {
 
 .hidden {
   display: none;
+}
+
+.markup {
+  display: flex;
+  justify-content: center;
+
+  flex-wrap: wrap;
+  gap: 24px;
+}
+
+.gallery-item {
+  border-radius: 4px;
+  border: 1px solid #808080;
+  overflow: hidden;
+  box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+  transition: all 0.4s;
+}
+
+.gallery-item:hover {
+  transform: scale(1.06);
+}
+
+.gallery-image {
+  width: 360px;
+  height: 152px;
+}
+
+.image-desc {
+  display: flex;
+  justify-content: space-around;
+  border-right: 1px solid #808080;
+  border-bottom: 1px solid #808080;
+  border-left: 1px solid #808080;
+  background-color: #fff;
+}
+
+.image-desc-title {
+  margin: 4px 0 0;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.33;
+  letter-spacing: 0.48px;
+}
+
+.image-desc-text {
+  margin: 0 0 4px;
+  text-align: center;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px; /* 200% */
+  letter-spacing: 0.48px;
 }

@@ -1,5 +1,9 @@
+import { imageMarkupTemplate } from './js/render-functions';
+import { onSearchImages } from './js/pixabay-api';
 import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
+import SimpleLightbox from 'simplelightbox';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 
 const refs = {
   formEl: document.querySelector('.js-form'),
@@ -9,31 +13,18 @@ const refs = {
   loader: document.querySelector('.loader'),
 };
 
-function showLoader() {
-  refs.loader.classList.remove('hidden');
-}
-function hideLoader() {
-  refs.loader.classList.add('hidden');
-}
-// showLoader();
 hideLoader();
 
-refs.formEl.addEventListener('submit', onSearchImages);
+refs.formEl.addEventListener('submit', onFormSubmit);
 
-function onSearchImages(e) {
+function onFormSubmit(e) {
   e.preventDefault();
+  showLoader();
+  refs.markupEl.innerHTML = '';
   const inputValue = refs.formEl.elements.image.value.trim();
   if (!inputValue) return;
-  const BASE_URL = 'https://pixabay.com';
-  const END_POINT = '/api/';
   refs.formEl.reset();
-  return fetch(
-    `${BASE_URL}${END_POINT}?key=45015838-73ef95672254612a035b0fb4a&q=${inputValue}&image_type=photo&orientation=horizontal&safesearch=true`
-  )
-    .then(value => {
-      if (!value.ok) throw new Error(value.status);
-      return value.json();
-    })
+  onSearchImages(inputValue)
     .then(value => {
       if (!value.hits.length) {
         iziToast.show({
@@ -46,8 +37,10 @@ function onSearchImages(e) {
           position: 'topRight',
           timeout: 3000,
         });
+        return;
       }
-      return value.hits;
+      renderImages(value.hits);
+      gallery.refresh();
     })
     .catch(error => {
       iziToast.error({
@@ -60,50 +53,25 @@ function onSearchImages(e) {
         position: 'topRight',
         timeout: 3000,
       });
+    })
+    .finally(() => {
+      hideLoader();
     });
 }
 
-function imageMarkupTemplate(arr) {
-  return arr
-    .map(item => {
-      `<li class="gallery-item">
-  <a class="gallery-link" href="${item.largeImageURL}">
-    <img
-      class="gallery-image"
-      src="${item.webformatURL}"
-      alt="${item.tags}"
-      width="360"
-      height="200"
-    />
-     <ul class="image-dsc">
-        <li > 
-            <p class="image-dsc-title">Likes</p>
-            <p class="image-dsc-text">${item.likes}</p>
-        </li>
-         <li > 
-            <p class="image-dsc-title">Views</p>
-            <p class="image-dsc-text">${item.views}</p>
-        </li>
-        <li > 
-            <p class="image-dsc-title">Comments</p>
-            <p class="image-dsc-text">${item.comments}</p>
-        </li>
-        <li > 
-            <p class="image-dsc-title">Downloads</p>
-            <p class="image-dsc-text">${item.downloads}</p>
-        </li>
-     </ul>
-  </a>
-</li>`;
-    })
-    .join('');
-}
-
-function imagesMarkup(arr) {
-  return arr.map(imageMarkupTemplate).join(' ');
-}
-
 function renderImages(arr) {
-  const markup = imagesMarkup(arr);
+  const markup = imageMarkupTemplate(arr);
   refs.markupEl.innerHTML = markup;
+}
+
+const gallery = new SimpleLightbox('.gallery-item a', {
+  captionsData: 'alt',
+  captionDelay: 250,
+});
+
+function showLoader() {
+  refs.loader.classList.remove('hidden');
+}
+function hideLoader() {
+  refs.loader.classList.add('hidden');
 }
