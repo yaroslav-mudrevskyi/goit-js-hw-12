@@ -35,7 +35,7 @@ async function onFormSubmit(e) {
     refs.formEl.reset();
     const res = await onSearchImages(inputValue);
     maxPage = Math.ceil(res.totalHits / per_page);
-    if (!res.hits.length && maxPage === 0) {
+    if (!res.hits.length) {
       iziToast.show({
         title: 'Oops',
         titleColor: '#FAFAFB',
@@ -74,6 +74,7 @@ refs.btnLoadMore.addEventListener('click', async () => {
     const res = await onSearchImages(inputValue, currentPage);
     const markup = imageMarkupTemplate(res.hits);
     refs.markupEl.insertAdjacentHTML('beforeend', markup);
+    gallery.refresh();
   } catch (error) {
     iziToast.error({
       title: 'Error',
@@ -97,11 +98,6 @@ function renderImages(arr) {
   refs.markupEl.innerHTML = markup;
 }
 
-const gallery = new SimpleLightbox('.gallery-item a', {
-  captionsData: 'alt',
-  captionDelay: 250,
-});
-
 function showLoadMoreBtn() {
   refs.btnLoadMore.classList.remove('hidden');
 }
@@ -111,7 +107,9 @@ function hideLoadMoreBtn() {
 }
 
 function updateBtnStatus() {
-  if (currentPage === maxPage && maxPage !== 1) {
+  if (maxPage <= 1) {
+    hideLoadMoreBtn();
+  } else if (currentPage === maxPage && maxPage !== 1) {
     hideLoadMoreBtn();
     iziToast.info({
       message: "We're sorry, but you've reached the end of search results.",
@@ -120,8 +118,6 @@ function updateBtnStatus() {
       position: 'bottomRight',
       timeout: 4000,
     });
-  } else if (maxPage <= 1) {
-    hideLoadMoreBtn();
   } else {
     showLoadMoreBtn();
   }
@@ -144,3 +140,8 @@ function scrollPage() {
     behavior: 'smooth',
   });
 }
+
+const gallery = new SimpleLightbox('.gallery-item a', {
+  captionsData: 'alt',
+  captionDelay: 250,
+});
