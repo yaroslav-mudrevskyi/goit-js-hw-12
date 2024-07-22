@@ -34,7 +34,7 @@ async function onFormSubmit(e) {
     if (!inputValue) return;
     refs.formEl.reset();
     const res = await onSearchImages(inputValue);
-    if (!res.hits.length) {
+    if (!res.hits.length && maxPage === 0) {
       iziToast.show({
         title: 'Oops',
         titleColor: '#FAFAFB',
@@ -48,7 +48,6 @@ async function onFormSubmit(e) {
       return;
     }
     maxPage = Math.ceil(res.totalHits / per_page);
-    console.log(maxPage);
     renderImages(res.hits);
     gallery.refresh();
   } catch (error) {
@@ -87,6 +86,7 @@ refs.btnLoadMore.addEventListener('click', async () => {
       timeout: 3000,
     });
   } finally {
+    scrollPage();
     updateBtnStatus();
     hideLoader();
   }
@@ -111,15 +111,17 @@ function hideLoadMoreBtn() {
 }
 
 function updateBtnStatus() {
-  if (currentPage >= maxPage) {
+  if (currentPage === maxPage && maxPage !== 1) {
     hideLoadMoreBtn();
-
     iziToast.info({
-      message:
-        maxPage === 0
-          ? "We're sorry, no any result."
-          : "We're sorry, but you've reached the end of search results.",
+      message: "We're sorry, but you've reached the end of search results.",
+      messageColor: '#4D3B03',
+      backgroundColor: '#06D8A8',
+      position: 'bottomRight',
+      timeout: 4000,
     });
+  } else if (maxPage <= 1) {
+    hideLoadMoreBtn();
   } else {
     showLoadMoreBtn();
   }
@@ -130,4 +132,15 @@ function showLoader() {
 }
 function hideLoader() {
   refs.loader.classList.add('hidden');
+}
+
+function scrollPage() {
+  const myElem = refs.markupEl.firstElementChild;
+
+  const height = myElem.getBoundingClientRect().height;
+
+  scrollBy({
+    top: height * 2,
+    behavior: 'smooth',
+  });
 }

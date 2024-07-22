@@ -13,7 +13,7 @@ export async function onSearchImages(inputValue, currentPage) {
       orientation: 'horizontal',
       safesearch: true,
       page: currentPage,
-      per_page: 100,
+      per_page: 15,
     },
   });
   return res.data;
