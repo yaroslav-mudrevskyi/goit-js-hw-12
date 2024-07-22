@@ -202,3 +202,25 @@ img {
   line-height: 24px; /* 200% */
   letter-spacing: 0.48px;
 }
+
+.btn-load {
+  display: block;
+  padding: 8px 16px;
+  margin: 0 auto;
+  margin-top: 12px;
+  border: none;
+  border-radius: 8px;
+  background-color: #4e75ff;
+  color: #fff;
+  font-weight: 500;
+  line-height: 1.5;
+  letter-spacing: 0.64px;
+}
+
+.btn-load:hover {
+  background-color: #6c8cff;
+}
+
+.btn-load.hidden {
+  display: none;
+}
