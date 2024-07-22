@@ -98,6 +98,11 @@ function renderImages(arr) {
   refs.markupEl.innerHTML = markup;
 }
 
+const gallery = new SimpleLightbox('.gallery-item a', {
+  captionsData: 'alt',
+  captionDelay: 250,
+});
+
 function showLoadMoreBtn() {
   refs.btnLoadMore.classList.remove('hidden');
 }
@@ -140,8 +145,3 @@ function scrollPage() {
     behavior: 'smooth',
   });
 }
-
-const gallery = new SimpleLightbox('.gallery-item a', {
-  captionsData: 'alt',
-  captionDelay: 250,
-});
