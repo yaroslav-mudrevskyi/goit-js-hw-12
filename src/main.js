@@ -34,6 +34,7 @@ async function onFormSubmit(e) {
     if (!inputValue) return;
     refs.formEl.reset();
     const res = await onSearchImages(inputValue);
+    maxPage = Math.ceil(res.totalHits / per_page);
     if (!res.hits.length && maxPage === 0) {
       iziToast.show({
         title: 'Oops',
@@ -47,7 +48,6 @@ async function onFormSubmit(e) {
       });
       return;
     }
-    maxPage = Math.ceil(res.totalHits / per_page);
     renderImages(res.hits);
     gallery.refresh();
   } catch (error) {
